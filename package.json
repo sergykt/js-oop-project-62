@@ -2,7 +2,9 @@
   "name": "@hexlet/code",
   "version": "1.0.0",
   "description": "Hexlet project Validator",
-  "main": "index.js",
+  "bin": {
+    "index": "bin/index.js"
+  },
   "scripts": {
     "test": "npx jest"
   },
@@ -18,7 +20,8 @@
   },
   "homepage": "https://github.com/sergykt/js-oop-project-62#readme",
   "dependencies": {
-    "lodash": "^4.17.21"
+    "lodash": "^4.17.21",
+    "yup": "^1.1.1"
   },
   "devDependencies": {
     "eslint": "^8.39.0",
