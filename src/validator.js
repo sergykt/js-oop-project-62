@@ -25,6 +25,21 @@ class Validator {
     return this;
   }
 
+  number() {
+    this.schema = this.schema.number().notRequired();
+    return this;
+  }
+
+  positive() {
+    this.schema = this.schema.positive();
+    return this;
+  }
+
+  range(from, to) {
+    this.schema = this.schema.min(from).max(to);
+    return this;
+  }
+
   isValid(value) {
     return this.schema.isValidSync(value);
   }
