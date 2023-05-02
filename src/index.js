@@ -1,102 +1,39 @@
 import * as yup from 'yup';
+import StringSchema from './stringschema.js';
+import NumberSchema from './numberschema.js';
+import ArraySchema from './arrayschema.js';
+import ObjectSchema from './objectschema.js';
 
 class Validator {
   constructor() {
-    this.schema = yup;
-    this.customValidator = {};
+    this.validator = yup;
+    this.customValidator = {
+      string: {},
+      number: {},
+      array: {},
+      object: {},
+    };
   }
 
   string() {
-    const newSchema = new Validator();
-    newSchema.schema = this.schema.string().notRequired();
-    newSchema.type = 'string';
-    return newSchema;
-  }
-
-  required() {
-    this.schema = this.schema.required();
-    return this;
-  }
-
-  minLength(length) {
-    this.schema = this.schema.min(length);
-    return this;
-  }
-
-  contains(value) {
-    this.schema = this.schema.matches(value, `The string doesn't contain ${value}`);
-    return this;
+    return new StringSchema(this.validator.string().notRequired(), this.customValidator.string);
   }
 
   number() {
-    const newSchema = new Validator();
-    newSchema.schema = this.schema.number().notRequired();
-    newSchema.type = 'number';
-    return newSchema;
-  }
-
-  positive() {
-    this.schema = this.schema.positive();
-    return this;
-  }
-
-  range(from, to) {
-    this.schema = this.schema.min(from).max(to);
-    return this;
+    return new NumberSchema(this.validator.number().notRequired(), this.customValidator.number);
   }
 
   array() {
-    const newSchema = new Validator();
-    newSchema.schema = this.schema.array().of(yup.mixed()).notRequired();
-    newSchema.type = 'number';
-    return newSchema;
-  }
-
-  sizeof(length) {
-    this.schema = this.schema.length(length);
-    return this;
+    return new
+    ArraySchema(this.validator.array().of(yup.mixed()).notRequired(), this.customValidator.array);
   }
 
   object() {
-    const newSchema = new Validator();
-    newSchema.schema = this.schema.object().notRequired();
-    newSchema.type = 'object';
-    return newSchema;
-  }
-
-  shape(fields) {
-    const entries = Object.entries(fields);
-    const finalFields = entries.reduce((acc, [key, value]) => {
-      const newValue = value.schema;
-      return { ...acc, ...{ [key]: newValue } };
-    }, {});
-
-    this.schema = this.schema.shape(finalFields);
-    return this;
+    return new ObjectSchema(this.validator.object().notRequired(), this.customValidator.object);
   }
 
   addValidator(type, name, fn) {
-    if (!Validator.customValidator) {
-      Validator.customValidator = {};
-    }
-    Validator.customValidator[name] = fn;
-    return this;
-  }
-
-  test(name, fnValue) {
-    const fn = Validator.customValidator[name];
-    const newFn = (value) => fn(value, fnValue);
-
-    this.schema = this.schema.test(
-      name,
-      'Custom Validator does not match',
-      newFn,
-    );
-    return this;
-  }
-
-  isValid(value) {
-    return this.schema.isValidSync(value);
+    this.customValidator[type][name] = fn;
   }
 }
 
