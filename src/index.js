@@ -1,8 +1,6 @@
 import * as yup from 'yup';
 
 class Validator {
-  static customValidator = {};
-
   constructor() {
     this.schema = yup;
     this.customValidator = {};
@@ -78,6 +76,9 @@ class Validator {
   }
 
   addValidator(type, name, fn) {
+    if (!Validator.customValidator) {
+      Validator.customValidator = {};
+    }
     Validator.customValidator[name] = fn;
     return this;
   }
