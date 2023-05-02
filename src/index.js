@@ -1,8 +1,11 @@
 import * as yup from 'yup';
 
 class Validator {
+  static customValidator = {};
+
   constructor() {
     this.schema = yup;
+    this.customValidator = {};
   }
 
   string() {
@@ -71,6 +74,23 @@ class Validator {
     }, {});
 
     this.schema = this.schema.shape(finalFields);
+    return this;
+  }
+
+  addValidator(type, name, fn) {
+    Validator.customValidator[name] = fn;
+    return this;
+  }
+
+  test(name, fnValue) {
+    const fn = Validator.customValidator[name];
+    const newFn = (value) => fn(value, fnValue);
+
+    this.schema = this.schema.test(
+      name,
+      'Custom Validator does not match',
+      newFn,
+    );
     return this;
   }
 
