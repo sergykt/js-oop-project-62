@@ -63,6 +63,17 @@ class Validator {
     return newSchema;
   }
 
+  shape(fields) {
+    const entries = Object.entries(fields);
+    const finalFields = entries.reduce((acc, [key, value]) => {
+      const newValue = value.schema;
+      return { ...acc, ...{ [key]: newValue } };
+    }, {});
+
+    this.schema = this.schema.shape(finalFields);
+    return this;
+  }
+
   isValid(value) {
     return this.schema.isValidSync(value);
   }
