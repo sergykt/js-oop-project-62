@@ -58,7 +58,7 @@ class Validator {
 
   object() {
     const newSchema = new Validator();
-    newSchema.schema = this.schema.object();
+    newSchema.schema = this.schema.object().notRequired();
     newSchema.type = 'object';
     return newSchema;
   }
